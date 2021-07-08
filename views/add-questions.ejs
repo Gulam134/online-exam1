@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Online Exam</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>>Online Exam</h2>
+        <form>
+            <div class="form-group">
+                <span id="qno" data="<%=questionNo%>">Question Number:</span>
+                <%=questionNo%>
+            </div>
+            <div class="form-group">
+                <label for="question">Question:</label>
+                <input type="text" class="form-control" id="question" placeholder="Enter question" name="question">
+            </div>
+            <div class="form-group">
+                <label for="optionA">option A:</label>
+                <input type="text" class="form-control" id="optionA" placeholder="Enter optionA" name="optionA">
+            </div>
+            <div class="form-group">
+                <label for="optionB">option B:</label>
+                <input type="text" class="form-control" id="optionB" placeholder="Enter optionB" name="optionB">
+            </div>
+            <div class="form-group">
+                <label for="optionC">option C:</label>
+                <input type="text" class="form-control" id="optionC" placeholder="Enter optionC" name="optionC">
+            </div>
+            <div class="form-group">
+                <label for="optionD">option D:</label>
+                <input type="text" class="form-control" id="optionD" placeholder="Enter option D" name="optionD">
+            </div>
+            <div class="form-group">
+                <label for="correctOption">correct option:</label>
+                <input type="text" class="form-control" id="correctOption" placeholder="Enter correc tOption"
+                    name="correctOption">
+            </div>
+            <button type="button" class="btn btn-default btn_submit">Submit</button>
+        </form>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".btn_submit", function () {
+            console.log('clicked');
+            var qno = $("#qno").attr("data");
+            var question = $("#question").val();
+            var optionA = $("#optionA").val();
+            var optionB = $("#optionB").val();
+            var optionC = $("#optionC").val();
+            var optionD = $("#optionD").val();
+            var correctOption = $("#correctOption").val();
+            var data = {
+                qNo: qno,
+                question: question,
+                optionA: optionA,
+                optionB: optionB,
+                optionC: optionC,
+                optionD: optionD,
+                correctOption: correctOption,
+            }
+            console.log(data);
+            $.ajax({
+                url: "./question-add",
+                type: "POST",
+                data: data,
+                success: function (res) {
+                    console.log(res.success)
+                    alert(res.success);
+                    window.location.reload();
+                },
+                Error: function (res) {
+                    console.log(err);
+                },
+            });
+        });
+    });
+</script>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <link rel="stylesheet" href="css/qus.css"> -->
+    <!-- Bootstrap CSS -->
+    <link rel=" stylesheet " href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css "
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh " crossorigin="anonymous ">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js "></script>
+    <style>
+        .circle {
+            height: 20px;
+            width: 20px;
+            background-color: blue;
+            border-radius: 200px;
+            margin: 5px;
+            color: #fff;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+
+        .next {
+            float: right;
+        }
+
+        .numberCircle {
+            border-radius: 50%;
+            width: 54px;
+            height: 50px;
+            padding: 8px;
+
+            background: #fff;
+            border: 2px solid #666;
+            color: #666;
+            text-align: center;
+
+            font: 32px Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <%questionLength=Number(questionLength)%>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 question-section">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="question" data="<%= question[0].qNo%>">Q.<%= question[0].qNo%>
+                                            <%= question[0].question%>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li> <input type="radio" name="option" value="A" />
+                                            <%= question[0].optionA%>
+                                        </li>
+                                        <li><input type="radio" name="option" value="B" />
+                                            <%= question[0].optionB%>
+                                        </li>
+                                        <li><input type="radio" name="option" value="C" />
+                                            <%= question[0].optionC%>
+                                        </li>
+                                        <li><input type="radio" name="option" value="D>" />
+                                            <%= question[0].optionD%>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <%if(skip!=0){%><button type="button" class="btn btn-info btn_prev"
+                                            data="<%= skip%>">
+                                            Previous</button>
+                                        <%}%>
+                                            <%if(question[0].qNo==questionLength){%><button type="button"
+                                                    class="btn btn-primary btn_submit" data="<%= skip%>">submit</button>
+                                                <%}else{%>
+                                                    <button type="button" class="btn btn-primary btn_next"
+                                                        data="<%= skip%>">Next</button>
+                                                    <%}%>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+                </div>
+                <div class="col-md-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%for(var i=1;i<=questionLength;i++){%>
+                                <tr>
+                                    <td>
+                                        <div class="circle">
+                                            <span>
+                                                <%=questionLength[i]%>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <%}%>
+                        </tbody>
+                    </table>
+
+                    <!-- <div class="row mt-4"></div>
+                <span class="numberCircle">1</span>
+                <span class="numberCircle">2</span>
+                <span class="numberCircle">3</span>
+                <span class="numberCircle">4</span>
+                <span class="numberCircle">5</span>
+                <span class="numberCircle">6</span>
+                <span class="numberCircle">7</span>
+                <span class="numberCircle">8</span>
+                <span class="numberCircle">9</span>
+                <span class="numberCircle">10</span> -->
+                </div>
+            </div>
+        </div>
+
+
+
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".btn_next", function () {
+            var selected = $("input[name='option']:checked").val();
+            var qno = $(".question").attr("data");
+            if (!selected) {
+                alert("Please select answer")
+            } else {
+                var allAnswer = [];
+                var data = {
+                    selected: selected,
+                    qno: qno,
+                }
+                var answers = JSON.parse(localStorage.getItem("answers"));
+                console.log("answers-->", answers);
+                if (answers) {
+                    // console.log("answersStingify-->", JSON.stringify(answers));
+                    // answers = JSON.stringify(answers);
+                    answers.push(data);
+                    localStorage.setItem('answers', JSON.stringify(answers));
+                } else {
+                    allAnswer.push(data);
+                    localStorage.setItem('answers', JSON.stringify(allAnswer));
+                }
+                var skip = $(this).attr("data");
+                skip = Number(skip) + 1;
+                window.location.href = window.location.pathname + "?skip=" + skip + "&selected=" + selected + "&qNo=" + qno;
+            }
+
+        })
+        $(document).on("click", ".btn_prev", function () {
+            var skip = $(this).attr("data");
+            skip = Number(skip) - 1;
+            window.location.href = window.location.pathname + "?skip=" + skip;
+        })
+        $(document).on("click", ".btn_submit", function () {
+            var answers = JSON.parse(localStorage.getItem("answers"));
+
+            var selected = $("input[name='option']:checked").val();
+            var qno = $(".question").attr("data");
+            var data = {
+                selected: selected,
+                qno: qno,
+            }
+            if (!selected) {
+                alert("Please select answer")
+            }
+            if (answers) {
+                answers.push(data);
+                localStorage.setItem('answers', JSON.stringify(answers));
+                var finalArray = JSON.parse(localStorage.getItem("answers"));
+                $.ajax({
+                    url: "./exam-response",
+                    type: "POST",
+                    data: { answersArray: JSON.stringify(finalArray) },
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.success);
+                            localStorage.removeItem("answers");
+                            window.location.href = window.location.pathname.split("/")[0] + "login"
+                        } else if (res.error) {
+                            alert(res.error);
+                        }
+
+                    },
+                    Error: function (res) {
+                        console.log(err);
+                    },
+                })
+            }
+            // var answersArray = [];
+            // $('.table > tbody  > tr').each(function (question, tr) {
+            //     console.log("question-->", question);
+            //     question = question + 1
+            //     var questionNo = $(this).find(".question" + question).attr("data");
+            //     var selectedAnsure = $(this).find("input[type='radio']:checked").val();
+            //     answersArray.push({ questionNo: questionNo, selectedAnsure: selectedAnsure });
+
+
+            // });
+            // console.log("answersArray", answersArray);
+            // $.ajax({
+            //     url: "./exam-response",
+            //     type: "POST",
+            //     data: { answersArray: JSON.stringify(answersArray) },
+            //     success: function (res) {
+            //         console.log(res.success)
+            //         alert(res.success);
+            //     },
+            //     Error: function (res) {
+            //         console.log(err);
+            //     },
+            // })
+        })
+    });
+</script>
+
+</html>
